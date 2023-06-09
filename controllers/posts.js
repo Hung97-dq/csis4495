@@ -21,12 +21,10 @@ export const getPosts = async (req, res) => {
 }
 
 export const getPostsBySearch = async (req, res) => {
-    const { searchQuery, tags } = req.query;
-
+    const { tags } = req.query;
+    console.log("tag:",tags);
     try {
-        const title = new RegExp(searchQuery, "i");
-
-        const posts = await PostMessage.find({ $or: [ { title }, { tags: { $in: tags.split(',') } } ]});
+        const posts = await PostMessage.find({ memberID: { $in: tags.split(',') } });
         console.log(posts);
         res.json({ data: posts });
     } catch (error) {    
@@ -62,15 +60,16 @@ export const createPost = async(req, res) => {
 
 export const updatePost = async (req,res) =>{
     const { id } = req.params;
-    const { title, message, creator, selectedFile, tags } = req.body;
+    const { creator, memberID, loanAmount, interestRate, loanLength, loanGrade, loanPurpose, name } = req.body;
     
     if (!mongoose.Types.ObjectId.isValid(id)) return res.status(404).send(`No post with id: ${id}`);
 
-    const updatedPost = { creator, title, message, tags, selectedFile, _id: id };
+    const updatedPost = { creator, memberID, loanAmount, interestRate, loanLength, loanGrade, loanPurpose, name, createdAt: new Date().toISOString(), _id: id };
 
     await PostMessage.findByIdAndUpdate(id, updatedPost, { new: true });
 
     res.json(updatedPost);
+    console.log(updatedPost);
 }
 
 // export const updatePost = async (req, res) => {
@@ -118,7 +117,8 @@ export const likePost = async (req, res) => {
 }
 
 export const commentPost = async (req, res) => {
-    const { id } = req.params;
+    console.log("cp",req.params);
+    const { id, memberID } = req.params;
     const { value } = req.body;
 
     const post = await PostMessage.findById(id);

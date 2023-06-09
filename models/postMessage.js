@@ -1,12 +1,18 @@
 import mongoose from "mongoose";
 
 const postSchema = mongoose.Schema({
-    title: String,
-    message: String,
+    memberID: String,
+    loanAmount: Number,
+    interestRate: Number,
+    loanLength: Number,
+    loanGrade: String,
+    loanPurpose: String,
     name: String,
     creator: String,
-    tags: [String],
-    selectedFile: String,
+    price_code: {
+        type: String,
+        default: 'USD'
+    },
     likes: {
         type: [String],
         default: [],
@@ -17,6 +23,7 @@ const postSchema = mongoose.Schema({
         default: new Date()
     },
 });
+
 
 const PostMessage = mongoose.model('PostMessage', postSchema);
 
