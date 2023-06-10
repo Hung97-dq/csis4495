@@ -9,10 +9,12 @@ export const getPosts = async (req, res) => {
     console.log(page);
     try {
         const LIMIT = 8;
-        const startIndex = (Number(page) - 1) * LIMIT; // get the starting index of every page
+// get the starting index of every page
+        const startIndex = (Number(page) - 1) * LIMIT; 
+
     
         const total = await PostMessage.countDocuments({});
-        const posts = await PostMessage.find().sort({ _id: -1 }).limit(LIMIT).skip(startIndex);
+        const posts = await PostMessage.find().sort({ _id: -1 });
 
         res.json({ data: posts, currentPage: Number(page), numberOfPages: Math.ceil(total / LIMIT)});
     } catch (error) {    
